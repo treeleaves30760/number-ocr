@@ -15,9 +15,7 @@ def generate_image(numbers, image_size=(104, 32), bg_color=(255, 255, 255)):
         font_size = random.randint(20, 28)  # Adjusted font size
         font = ImageFont.truetype("arial.ttf", font_size)  # Using regular Arial
         
-        color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        if color[0] + color[1] + color[2] > 600:  # If the color is too bright
-            color = (0, 0, 0)
+        color = (random.randint(0, 180), random.randint(0, 180), random.randint(0, 180))
         
         # Create an image for each digit
         txt_img = Image.new('RGBA', (font_size*2, font_size*2), (255, 255, 255, 0))
