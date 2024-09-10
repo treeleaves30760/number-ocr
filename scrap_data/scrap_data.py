@@ -61,7 +61,7 @@ def download_image(session, url, save_path):
         print(f"Failed to download: {url}")
 
 def main():
-    output_dir = "images"
+    output_dir = os.path.join("scrap_data", "images")
     
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
