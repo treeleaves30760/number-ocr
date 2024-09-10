@@ -38,14 +38,13 @@ def download_image(session, url, save_path):
         print(f"Failed to download: {url}")
 
 def main():
-    num_images = 10000  # Change this to the number of images you want to download
     output_dir = "images"
     
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     
     session = get_session()
-    for i in range(num_images):
+    while True:
         try:
             auth_img_base_url = get_auth_img_url(session)
             print(f"Found auth_img base URL: {auth_img_base_url}")
