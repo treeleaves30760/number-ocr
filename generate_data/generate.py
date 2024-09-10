@@ -2,7 +2,7 @@ import os
 import random
 from PIL import Image, ImageDraw, ImageFont
 import csv
-from tqdm import *
+from tqdm import tqdm
 
 def generate_image(numbers, image_size=(104, 32), bg_color=(255, 255, 255)):
     image = Image.new('RGB', image_size, bg_color)
@@ -12,44 +12,39 @@ def generate_image(numbers, image_size=(104, 32), bg_color=(255, 255, 255)):
     digit_images = []
     
     for num in numbers:
-        font_size = random.randint(60, 72)  # Slightly reduced max font size
-        font = ImageFont.truetype("arial.ttf", font_size)
+        font_size = random.randint(24, 32)  # Adjusted font size
+        font = ImageFont.truetype("arialbd.ttf", font_size)  # Using Arial Bold
         
         color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         if color[0] + color[1] + color[2] > 600:  # If the color is too bright
             color = (0, 0, 0)
         
         # Create an image for each digit
-        txt_img = Image.new('RGBA', (font_size, font_size), (255, 255, 255, 0))
+        txt_img = Image.new('RGBA', (font_size*2, font_size*2), (255, 255, 255, 0))
         txt_draw = ImageDraw.Draw(txt_img)
-        txt_draw.text((0, 0), str(num), font=font, fill=color)
+        txt_draw.text((font_size//2, font_size//2), str(num), font=font, fill=color)
         
         # Rotate the digit
-        rotation = random.uniform(-10, 10)
-        txt_img = txt_img.rotate(rotation, expand=1)
+        rotation = random.uniform(-15, 15)
+        txt_img = txt_img.rotate(rotation, expand=1, resample=Image.BICUBIC)
+        
+        # Crop the rotated image
+        bbox = txt_img.getbbox()
+        txt_img = txt_img.crop(bbox)
         
         digit_images.append(txt_img)
-        total_width += txt_img.width + 1  # +1 for minimal spacing
+        total_width += txt_img.width
     
-    # Adjust spacing if total width is too large
-    if total_width > image_size[0]:
-        scale_factor = image_size[0] / total_width
-        for i, img in enumerate(digit_images):
-            new_width = int(img.width * scale_factor)
-            new_height = int(img.height * scale_factor)
-            digit_images[i] = img.resize((new_width, new_height), Image.LANCZOS)
-        total_width = sum(img.width for img in digit_images)
-    
-    # Calculate starting x position to center the numbers
-    start_x = (image_size[0] - total_width) // 2
+    # Calculate starting x position
+    start_x = max(0, (image_size[0] - total_width) // 2)
     
     for digit_img in digit_images:
-        # Calculate y position to vertically center the digit
-        y_position = (image_size[1] - digit_img.height) // 2
+        # Calculate y position to randomly place the digit vertically
+        y_position = random.randint(-5, image_size[1] - digit_img.height + 5)
         
         # Paste the digit onto the main image
         image.paste(digit_img, (start_x, y_position), digit_img)
-        start_x += digit_img.width + 1  # +1 for minimal spacing
+        start_x += digit_img.width - random.randint(0, 2)  # Reduce gap between digits
 
     return image
 
