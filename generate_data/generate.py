@@ -2,6 +2,7 @@ import os
 import random
 from PIL import Image, ImageDraw, ImageFont
 import csv
+from tqdm import *
 
 def generate_image(numbers, image_size=(104, 32), bg_color=(255, 255, 255)):
     image = Image.new('RGB', image_size, bg_color)
@@ -11,10 +12,12 @@ def generate_image(numbers, image_size=(104, 32), bg_color=(255, 255, 255)):
     digit_images = []
     
     for num in numbers:
-        font_size = random.randint(18, 24)  # Slightly reduced max font size
+        font_size = random.randint(60, 72)  # Slightly reduced max font size
         font = ImageFont.truetype("arial.ttf", font_size)
         
         color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        if color[0] + color[1] + color[2] > 600:  # If the color is too bright
+            color = (0, 0, 0)
         
         # Create an image for each digit
         txt_img = Image.new('RGBA', (font_size, font_size), (255, 255, 255, 0))
@@ -35,7 +38,7 @@ def generate_image(numbers, image_size=(104, 32), bg_color=(255, 255, 255)):
             new_width = int(img.width * scale_factor)
             new_height = int(img.height * scale_factor)
             digit_images[i] = img.resize((new_width, new_height), Image.LANCZOS)
-        total_width = sum(img.width for img in digit_images) + 5  # +5 for minimal spacing
+        total_width = sum(img.width for img in digit_images)
     
     # Calculate starting x position to center the numbers
     start_x = (image_size[0] - total_width) // 2
@@ -57,7 +60,7 @@ def generate_dataset(num_images, output_dir):
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(['image_name', 'numbers'])
         
-        for i in range(num_images):
+        for i in tqdm(range(num_images)):
             numbers = ''.join([str(random.randint(0, 9)) for _ in range(6)])
             image = generate_image(numbers)
             
@@ -70,4 +73,4 @@ def generate_dataset(num_images, output_dir):
     print(f"Generated {num_images} images and data.csv in {output_dir}")
 
 # Generate the dataset
-generate_dataset(num_images=1000, output_dir=os.path.join('generate_datas', 'images'))
+generate_dataset(num_images=2000, output_dir=os.path.join('generate_data', 'images'))
