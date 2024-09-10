@@ -1,2 +1,6 @@
 requests
 beautifulsoup4
+opencv-python
+numpy
+pillow
+pytesseract
