@@ -2,6 +2,7 @@ requests
 beautifulsoup4
 opencv-python
 numpy
+pandas
 pillow
 pytesseract
 tdqm
