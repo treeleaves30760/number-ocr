@@ -76,4 +76,4 @@ def generate_dataset(num_images, output_dir):
     print(f"Generated {num_images} images and data.csv in {output_dir}")
 
 # Generate the dataset
-generate_dataset(num_images=200000, output_dir=os.path.join('generate_data', 'images'))
+generate_dataset(num_images=1000000, output_dir=os.path.join('generate_data', 'images'))
